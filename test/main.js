@@ -10,7 +10,7 @@ const rethinkdbdashStub = () => {
   Term.prototype.insert = (x) => x;
   Term.prototype.update = (x) => x;
 
-  var _r = {
+  const _r = {
     table() {
       return new Term();
     }
@@ -29,7 +29,7 @@ describe('rethinkdbdash-timestampable', () => {
 
     expect(r.table().insert(1)).to.equal(1);
     expect(r.table().update(2)).to.equal(2);
-  })
+  });
 
 
   it('should patch a rethinkdbdash instance', () => {
@@ -78,4 +78,14 @@ describe('rethinkdbdash-timestampable', () => {
     expect(updateResult).to.have.property(updatedAtKey);
     expect(updateResult).to.not.have.property('updatedAt');
   });
-})
+
+
+  it('should ignore bad input', () => {
+    const r = rethinkdbdashStub();
+
+    timestampable(r);
+
+    expect(r.table().insert(null)).to.equal(null);
+    expect(r.table().insert(1)).to.equal(1);
+  });
+});
